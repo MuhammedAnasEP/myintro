@@ -10,5 +10,7 @@ urlpatterns = [
     path('auth/logout', views.LogoutView.as_view(), name='logout'),
     path('auth/user', views.UserView.as_view(), name='user'),
 
-    path('profile/personal', views.CreateListPersonalDetails.as_view(), name='personal-details')
+    path('profile/personal', views.CreateListPersonalDetails.as_view(), name='personal-details'),
+    path('profile/social', views.CreateListSocialProfile.as_view(), name='personal-details')
+
 ]

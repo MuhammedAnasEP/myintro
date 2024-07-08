@@ -1,7 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt import tokens
 from rest_framework_simplejwt.exceptions import InvalidToken
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
@@ -14,8 +13,8 @@ from django.contrib.auth import authenticate
 from django.conf import settings
 from django.middleware import csrf
 
-from .serializers import RegistrationSerializer, LoginSerializer, UserSerializer, PersonalDetailsSerialzer
-from .models import User
+from .serializers import RegistrationSerializer, LoginSerializer, UserSerializer, PersonalDetailsSerialzer, SocialProfileSerializer
+from .models import User, SocialProfile
 
 # Create your views here.
 
@@ -193,3 +192,30 @@ class CreateListPersonalDetails(APIView):
         return Response({'detail': 'Invalid Credentials!'}, status=status.HTTP_400_BAD_REQUEST)
 
         
+class CreateListSocialProfile(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            user = User.objects.get(id = request.user.id)
+            social_profile = SocialProfile.objects.get(user = user)
+        except SocialProfile.DoesNotExist:
+            return Response(status_code=404)
+        
+        serializer = SocialProfileSerializer(social_profile)
+        return Response(serializer.data)
+    
+    def put(self, request):
+        try:
+            user = User.objects.get(id = request.user.id)
+            social_profile = SocialProfile.objects.get(user = user)
+        except SocialProfile.DoesNotExist:
+            return Response(status_code=404)
+        
+        serializer = SocialProfile(social_profile, data = request.data)
+        if serializer.is_valid(raise_exception = True):
+            profile = serializer.save()
+            if profile is not None:
+                return Response({'status':'Updated', 'data':serializer.data}, status=status.HTTP_201_CREATED)
+                        
+        return Response({'detail': 'Invalid Credentials!'}, status=status.HTTP_400_BAD_REQUEST)

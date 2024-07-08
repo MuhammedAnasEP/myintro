@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User
+from .models import User, SocialProfile
 
 class RegistrationSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(style={'input_type': 'password'}, write_only=True)
@@ -61,9 +61,27 @@ class PersonalDetailsSerialzer(serializers.Serializer):
     
     def update(self, instance, validated_data):
         instance.email = validated_data.get('email', instance.email)
+        instance.title = validated_data.get('title', instance.title)
         instance.full_name = validated_data.get('full_name', instance.full_name)
         instance.phone_number = validated_data.get('phone_number', instance.phone_number)
         instance.location = validated_data.get('location', instance.location)
         instance.summary = validated_data.get('summary', instance.summary)
+        instance.save()
+        return instance
+    
+class SocialProfileSerializer(serializers.Serializer):
+    x = serializers.CharField(max_length=100, required = False)
+    instagram = serializers.CharField(max_length=100, required = False)
+    linkedin = serializers.CharField(max_length=100, required = False)
+    you_tube = serializers.CharField(max_length=100, required = False)
+    
+    def create(self, validate_data):
+        return SocialProfile.objects.create(**validate_data)
+    
+    def update(self, instance, validated_data):
+        instance.x = validated_data.get('x', instance.x)
+        instance.instagram = validated_data.get('instagram', instance.instagram)
+        instance.linkedin = validated_data.get('linkedin', instance.linkedin)
+        instance.you_tube = validated_data.get('you_tube', instance.you_tube)
         instance.save()
         return instance

@@ -47,6 +47,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -134,18 +135,19 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',  # Fallback to default backend
 ]
 
-# CORS_ALLOWED_ORIGINS = [
-#     'http://localhost:3000'
-# ]
-
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000'
+]
+# CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_CREDENTIALS = True
 CSRF_COOKIE_SECURE = True # Change to True for deployement
 CSRF_COOKIE_HTTP_ONLY = True
-# CSRF_TRUSTED_ORIGINS = [
-#     'http://localhost:3000'
-# ]
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:3000'
+]
+
 CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SAMESITE = 'None'
@@ -181,13 +183,13 @@ SIMPLE_JWT = {
 
     'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
-    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(minutes=1),
 
     'AUTH_COOKIE': 'access',
     'AUTH_COOKIE_REFRESH': 'refresh',
     'AUTH_COOKIE_DOMAIN': None,
     
-    'AUTH_COOKIE_SECURE': True, # Whether the auth cookies should be secure (https:// only). Change to True for deployement
+    'AUTH_COOKIE_SECURE': True, # Whether the auth cookies should be secure (https:// only)
     'AUTH_COOKIE_HTTP_ONLY': True,
     'AUTH_COOKIE_PATH': '/',        # The path of the auth cookie.
     # Whether to set the flag restricting cookie leaks on cross-site requests. This can be 'Lax', 'Strict', or None to disable the flag.
@@ -195,11 +197,9 @@ SIMPLE_JWT = {
 }
 
 REST_FRAMEWORK = {
-
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
-
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
     ]

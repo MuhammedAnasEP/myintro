@@ -15,3 +15,16 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
+    
+class SocialProfile(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='social_profile')
+    x = models.CharField(max_length=100, verbose_name='x-app')
+    instagram = models.CharField(max_length=100, verbose_name='instagram')
+    linkedin = models.CharField(max_length=100, verbose_name='linkedin')
+    you_tube = models.CharField(max_length=100, verbose_name='youtube')
+    
+    class Meta:
+        db_table = 'myintro_social_profile'
+        verbose_name = 'Social Pofile'
+        verbose_name_plural = 'Social Pofiles'
+    
